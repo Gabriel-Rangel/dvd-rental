@@ -4,7 +4,7 @@ select
 	cus.customer_id, 
 	cus.first_name, 
 	cus.last_name,
-	sum(pay.amount) as amount
+	sum(cast(regexp_replace(pay.amount, '[$]', '') as integer)) as amount -- removing the $ sign and casting it to integer before summing the amount.
 from 
 	customer cus
 join
@@ -20,9 +20,9 @@ join
 join 
 	category cat on fca.category_id = cat.category_id 
 where 
-	cat.name = 'Horror'
+	cat.name = 'Horror' -- filtering by movie's category 'Horror'
 group by 
-	cus.customer_id, cus.first_name, cus.last_name
+	cus.customer_id, cus.first_name, cus.last_name -- grouping results by customer
 order by
-	amount desc 
-limit 5;
+	amount desc -- ordering results by amount paid in descending order
+limit 5 -- limiting the results to get the top 5 clients
